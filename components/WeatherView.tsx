@@ -41,49 +41,71 @@ const WeatherView: React.FC = () => {
   const current = forecast[0];
 
   return (
-    <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-blue-900 via-sky-800 to-indigo-900 text-white flex flex-col items-center justify-center p-8">
-      {/* Background Decorative Blobs */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2"></div>
+    <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] text-white flex flex-col items-center justify-center p-8">
+      
+      {/* Subtle Background Textures */}
+      <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+      
+      {/* Deep Glows */}
+      <div className="absolute top-[-20%] left-[20%] w-[600px] h-[600px] bg-blue-900/20 rounded-full blur-[120px]"></div>
+      <div className="absolute bottom-[-20%] right-[10%] w-[800px] h-[800px] bg-indigo-900/20 rounded-full blur-[150px]"></div>
 
       <div className="relative z-10 w-full max-w-7xl h-full flex flex-col">
         
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-light tracking-widest uppercase opacity-80 mb-2">Current Weather</h2>
-          <h1 className="text-6xl font-serif font-bold">Christchurch, NZ</h1>
+        <div className="text-center mb-10 pt-8">
+          <h2 className="text-xl md:text-2xl font-light tracking-[0.3em] uppercase text-blue-200/60 mb-3">Live Weather</h2>
+          <h1 className="text-6xl md:text-8xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 drop-shadow-xl">
+            Christchurch
+          </h1>
         </div>
 
         {/* Main Display */}
-        <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-16 mb-16">
-          <div className="scale-150 p-10">
+        <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24 mb-12">
+          
+          {/* Main Icon - Increased Size */}
+          <div className="scale-125 md:scale-150 p-4 drop-shadow-2xl">
              <WeatherIcon condition={current.condition} size="xl" />
           </div>
           
-          <div className="flex flex-col items-start glass-panel p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10">
-            <span className="text-9xl font-bold tracking-tighter drop-shadow-lg">
+          {/* Main Temp Box */}
+          <div className="flex flex-col items-start p-10 rounded-[3rem] backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.3)] min-w-[300px]">
+            <span className="text-9xl font-black tracking-tighter drop-shadow-lg text-white">
               {current.temp}°
             </span>
-            <span className="text-4xl font-light capitalize text-sky-200 mt-2">
+            <span className="text-4xl font-light capitalize text-blue-100/80 mt-2 tracking-wide">
               {current.condition.replace('-', ' ')}
             </span>
-            <div className="flex gap-6 mt-6 text-sm font-semibold opacity-70">
-              <span>H: {current.temp + 2}°</span>
-              <span>L: {current.temp - 4}°</span>
-              <span>Wind: 12km/h NE</span>
+            <div className="w-full h-px bg-white/20 my-6"></div>
+            <div className="flex w-full justify-between text-lg font-medium text-blue-200/70">
+              <div className="flex flex-col">
+                 <span className="text-xs uppercase tracking-widest opacity-60">High</span>
+                 <span>{current.temp + 2}°</span>
+              </div>
+              <div className="flex flex-col">
+                 <span className="text-xs uppercase tracking-widest opacity-60">Low</span>
+                 <span>{current.temp - 4}°</span>
+              </div>
+              <div className="flex flex-col text-right">
+                 <span className="text-xs uppercase tracking-widest opacity-60">Wind</span>
+                 <span>12<span className="text-xs">km/h</span></span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* 7 Day Forecast Grid */}
-        <div className="grid grid-cols-6 gap-4 w-full">
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-4 w-full">
           {forecast.slice(1).map((day, idx) => (
-            <div key={idx} className="flex flex-col items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm shadow-lg hover:bg-white/10 transition-colors">
-              <span className="text-lg font-bold tracking-wide">{day.day}</span>
-              <div className="my-4 transform scale-75">
+            <div 
+              key={idx} 
+              className="group flex flex-col items-center justify-between p-4 py-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md shadow-lg hover:bg-white/10 transition-all duration-300 hover:-translate-y-1"
+            >
+              <span className="text-lg font-semibold tracking-wide text-blue-100/90 group-hover:text-white">{day.day}</span>
+              <div className="my-6 transform scale-90 group-hover:scale-110 transition-transform duration-500">
                 <WeatherIcon condition={day.condition} size="sm" />
               </div>
-              <span className="text-2xl font-bold">{day.temp}°</span>
+              <span className="text-3xl font-bold text-white/90 group-hover:text-white">{day.temp}°</span>
             </div>
           ))}
         </div>
