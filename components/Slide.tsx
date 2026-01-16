@@ -34,7 +34,7 @@ const Slide: React.FC<Props> = ({ data }) => {
         }
         @keyframes pulse-glow {
           0%, 100% { box-shadow: 0 0 40px rgba(245,158,11,0.4); }
-          50% { box-shadow: 0 0 70px rgba(245,158,11,0.7); }
+          50% { box-shadow: 0 0 70px rgba(245,158,11,0.8); }
         }
       `}</style>
 
