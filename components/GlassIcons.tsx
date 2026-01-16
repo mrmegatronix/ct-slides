@@ -10,7 +10,7 @@ const getSizeClasses = (size: string) => {
     case 'xl': return 'w-64 h-64';
     case 'lg': return 'w-48 h-48';
     case 'md': return 'w-32 h-32';
-    case 'sm': return 'w-16 h-16'; // Increased sm size slightly for visibility
+    case 'sm': return 'w-16 h-16';
     default: return 'w-32 h-32';
   }
 };

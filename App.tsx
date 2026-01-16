@@ -107,12 +107,7 @@ const App: React.FC = () => {
       {/* --- Overlay Logo (Top Left) --- */}
       <div className="absolute top-8 left-8 z-[60] pointer-events-none">
         <img 
-          src="https://coasterstavern.co.nz/wp-content/uploads/2021/04/Coasters-Logo-Transparency.png" 
-          onError={(e) => {
-            // Fallback to local image if remote fails
-            e.currentTarget.src = 'images/logo.png';
-            e.currentTarget.onerror = null; // Prevent infinite loop
-          }}
+          src="images/logo.png" 
           alt="Coasters Tavern" 
           className="w-48 h-48 object-contain drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)]"
         />

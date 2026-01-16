@@ -32,6 +32,10 @@ const Slide: React.FC<Props> = ({ data }) => {
         .box-glow {
           box-shadow: 0 0 30px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.1);
         }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 40px rgba(245,158,11,0.4); }
+          50% { box-shadow: 0 0 70px rgba(245,158,11,0.7); }
+        }
       `}</style>
 
       {/* Content Container - Centered */}
@@ -65,18 +69,22 @@ const Slide: React.FC<Props> = ({ data }) => {
             {data.description}
           </p>
 
-          {/* Price Box with Glow */}
+          {/* Price Box with Strong Glow */}
           {data.price && (
             <div className="mt-12 animate-pop-in">
               <div 
-                className="relative group rounded-3xl p-[2px] bg-gradient-to-br from-white/60 to-white/10 overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.4)]"
+                className="relative group rounded-3xl p-[3px] bg-gradient-to-br from-white/80 to-amber-500/50 overflow-hidden"
+                style={{ 
+                   animation: 'pulse-glow 3s infinite',
+                   boxShadow: `0 0 60px ${data.highlightColor || '#f59e0b'}80`
+                }}
               >
                  <div className="absolute inset-0 bg-white/20 blur-xl"></div>
                  <div 
-                    className="relative px-16 py-8 rounded-[22px] backdrop-blur-xl bg-black/40 border border-white/20 flex flex-col items-center justify-center"
+                    className="relative px-16 py-8 rounded-[21px] backdrop-blur-xl bg-black/50 border border-white/30 flex flex-col items-center justify-center shadow-inner"
                  >
                    <span 
-                    className="text-7xl md:text-8xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+                    className="text-7xl md:text-8xl font-black text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.8)]"
                     style={{ fontFamily: "'Roboto', sans-serif" }}
                    >
                      {data.price}

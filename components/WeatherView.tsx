@@ -41,14 +41,14 @@ const WeatherView: React.FC = () => {
   const current = forecast[0];
 
   return (
-    <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] text-white flex flex-col items-center justify-center p-8">
+    <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-slate-950 via-black to-slate-900 text-white flex flex-col items-center justify-center p-8">
       
       {/* Subtle Background Textures */}
       <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
       
       {/* Deep Glows */}
-      <div className="absolute top-[-20%] left-[20%] w-[600px] h-[600px] bg-blue-900/20 rounded-full blur-[120px]"></div>
-      <div className="absolute bottom-[-20%] right-[10%] w-[800px] h-[800px] bg-indigo-900/20 rounded-full blur-[150px]"></div>
+      <div className="absolute top-[-20%] left-[20%] w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px]"></div>
+      <div className="absolute bottom-[-20%] right-[10%] w-[800px] h-[800px] bg-indigo-900/10 rounded-full blur-[150px]"></div>
 
       <div className="relative z-10 w-full max-w-7xl h-full flex flex-col">
         
