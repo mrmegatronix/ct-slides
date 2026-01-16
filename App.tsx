@@ -105,11 +105,18 @@ const App: React.FC = () => {
       </div>
 
       {/* --- Overlay Logo (Top Left) --- */}
-      <div className="absolute top-8 left-8 z-[60] pointer-events-none">
+      <div className="absolute top-8 left-8 z-[60] pointer-events-none flex flex-col items-center">
+        <h2 
+          className="text-3xl font-serif font-black text-amber-500 tracking-wider drop-shadow-[0_2px_10px_rgba(0,0,0,1)] mb-[-15px] z-10" 
+          style={{ textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}
+        >
+          Coasters Tavern
+        </h2>
         <img 
           src="images/logo.png" 
           alt="Coasters Tavern" 
           className="w-48 h-48 object-contain drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)]"
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
         />
       </div>
 

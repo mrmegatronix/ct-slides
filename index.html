@@ -92,7 +92,7 @@
             title: 'Steak Day Monday\'s',
             description: 'Start your week off with a 200g Succulent Rump Steak, cooked to your liking, served with golden fries and a green garden salad.',
             price: '$20',
-            imageUrl: 'images/bg1.jpg',
+            imageUrl: 'images/steak-night.jpg',
             highlightColor: '#f59e0b',
             type: 'promo'
           },
@@ -102,7 +102,7 @@
             title: 'Chase the Ace',
             description: 'Purchase a beverage between 3.30pm and 5.30pm and you\'re in the draw. Drawn @ 5.30pm',
             price: '5.30pm',
-            imageUrl: 'images/bg2.jpg',
+            imageUrl: 'images/platter.jpg',
             highlightColor: '#ef4444',
             type: 'promo'
           },
@@ -112,7 +112,7 @@
             title: 'Quiz Night',
             description: 'Starting back on the 21st January 2026, $190 in prizes up for grabs. Bookings Essential.',
             price: 'FREE ENTRY',
-            imageUrl: 'images/bg3.jpg',
+            imageUrl: 'images/schnitzel.jpg',
             highlightColor: '#eab308',
             type: 'promo'
           },
@@ -122,7 +122,7 @@
             title: 'Burger Day Thursdays',
             description: 'Your choice of Chicken, Beer Battered Fish, Pork Belly or Coasters Beef Burger, all served with Golden Fries & Onion Rings. 1 Burger for $19 or 2 for $35. Available from 12pm.',
             price: '$19 or $35!',
-            imageUrl: 'images/bg4.jpg',
+            imageUrl: 'images/burger-night.jpg',
             highlightColor: '#f97316',
             type: 'promo'
           },
@@ -132,7 +132,7 @@
             title: 'Happy Hours 10%',
             description: 'Enjoy 10% discount on selected beverages between 4.30pm & 6.30pm.',
             price: '10% Off!',
-            imageUrl: 'images/bg1.jpg',
+            imageUrl: 'images/fish-chips.jpg',
             highlightColor: '#3b82f6',
             type: 'promo'
           },
@@ -142,7 +142,7 @@
             title: 'Chase the Ace',
             description: 'Tickets from 3.30pm, Draw @ 6.30pm.',
             price: '$35',
-            imageUrl: 'images/bg2.jpg',
+            imageUrl: 'images/platter.jpg',
             highlightColor: '#06b6d4',
             type: 'promo'
           },
@@ -152,7 +152,7 @@
             title: 'Two Course Sunday Roast',
             description: 'Traditional roast of the day with roasted vegetables, seasonal greens and rich gravy, with an Ice Cream Sundae to finish.',
             price: '$28',
-            imageUrl: 'images/bg3.jpg',
+            imageUrl: 'images/roast.jpg',
             highlightColor: '#84cc16',
             type: 'promo'
           },
@@ -162,7 +162,7 @@
             title: 'Free Pool Thursdays',
             description: 'Our Pool Table is Free all day and night on Thursdays! Grab a cue and challenge your mates.',
             price: 'FREE',
-            imageUrl: 'images/bg4.jpg',
+            imageUrl: 'images/burger-night.jpg',
             highlightColor: '#f97316',
             type: 'promo'
           },
@@ -172,7 +172,7 @@
             title: 'Loyalty App',
             description: 'Join our loyalty program! Earn points with every purchase and redeem them for food and drinks.',
             price: 'Join Today',
-            imageUrl: 'images/bg1.jpg',
+            imageUrl: 'images/platter.jpg',
             highlightColor: '#8b5cf6',
             type: 'promo'
           }
@@ -367,6 +367,7 @@
                         <img 
                             src={data.imageUrl} 
                             alt={data.title} 
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
                             className="w-full h-full object-cover transition-transform duration-[30000ms] ease-linear transform scale-100 hover:scale-110" 
                             style={{ animation: 'subtleZoom 35s linear infinite alternate' }}
                         />
@@ -591,7 +592,10 @@
                         {currentSlide.type === 'weather' ? <WeatherView /> : <Slide key={currentSlide.id} data={currentSlide} />}
                     </div>
                     {/* --- Logo Overlay --- */}
-                    <div className="absolute top-8 left-8 z-[60] pointer-events-none">
+                    <div className="absolute top-8 left-8 z-[60] pointer-events-none flex flex-col items-center">
+                        <h2 className="text-3xl font-serif font-black text-amber-500 tracking-wider drop-shadow-[0_2px_10px_rgba(0,0,0,1)] mb-[-15px] z-10" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
+                            Coasters Tavern
+                        </h2>
                         <img 
                             src="images/logo.png" 
                             onError={(e) => { e.currentTarget.style.display = 'none'; }}

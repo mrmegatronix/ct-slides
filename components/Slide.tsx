@@ -15,6 +15,8 @@ const Slide: React.FC<Props> = ({ data }) => {
           alt={data.title} 
           className="w-full h-full object-cover transition-transform duration-[30000ms] ease-linear transform scale-100 hover:scale-110 animate-subtle-zoom" 
           style={{ animation: 'subtleZoom 35s linear infinite alternate' }}
+          // Hide image if it fails to load to avoid ugly broken icons, but do NOT replace with external
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
         />
         {/* Stronger overlay for better text contrast */}
         <div className="absolute inset-0 bg-black/60"></div>
