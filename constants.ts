@@ -2,6 +2,16 @@ import { SlideData } from './types';
 
 export const INITIAL_SLIDES: SlideData[] = [
   {
+    id: '0',
+    day: 'Welcome',
+    title: '',
+    description: '',
+    price: '',
+    imageUrl: 'images/logo.png',
+    highlightColor: '#d4af37',
+    type: 'promo'
+  },
+  {
     id: '1',
     day: 'Monday',
     title: 'Steak Day Monday\'s',

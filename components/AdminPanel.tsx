@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SlideData } from '../types';
-import { Plus, Trash2, Save, X, Edit2, ArrowLeft } from 'lucide-react';
+import { Plus, Trash2, Save, X, LayoutGrid, CheckCircle2, ArrowLeft, Image as ImageIcon } from 'lucide-react';
 
 interface Props {
   slides: SlideData[];
@@ -10,200 +10,205 @@ interface Props {
 
 const AdminPanel: React.FC<Props> = ({ slides, onSave, onClose }) => {
   const [localSlides, setLocalSlides] = useState<SlideData[]>(slides);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  
-  // Form State
-  const [formData, setFormData] = useState<Partial<SlideData>>({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const handleEdit = (slide: SlideData) => {
-    setEditingId(slide.id);
-    setFormData(slide);
+  const handleUpdateSlide = (id: string, updates: Partial<SlideData>) => {
+    const updated = localSlides.map(s => s.id === id ? { ...s, ...updates } : s);
+    setLocalSlides(updated);
+    setHasUnsavedChanges(true);
   };
 
   const handleCreate = () => {
     const newSlide: SlideData = {
       id: Date.now().toString(),
       type: 'promo',
-      day: 'Monday',
+      day: 'New Day',
       title: 'New Special',
-      description: 'Description here...',
+      description: 'Enter description...',
       price: '$0',
-      imageUrl: 'https://picsum.photos/1920/1080',
-      highlightColor: '#eab308'
+      imageUrl: 'images/steak-night.jpg',
+      highlightColor: '#f59e0b'
     };
     setLocalSlides([...localSlides, newSlide]);
-    handleEdit(newSlide);
+    setHasUnsavedChanges(true);
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this slide?')) {
+    if (confirm('Delete this slide?')) {
       const updated = localSlides.filter(s => s.id !== id);
       setLocalSlides(updated);
-      onSave(updated); // Auto save on delete
-      if (editingId === id) setEditingId(null);
+      setHasUnsavedChanges(true);
     }
   };
 
-  const handleSaveForm = () => {
-    if (!formData.id) return;
-    
-    const updated = localSlides.map(s => 
-      s.id === formData.id ? { ...s, ...formData } as SlideData : s
-    );
-    setLocalSlides(updated);
-    onSave(updated);
-    setEditingId(null);
-    setFormData({});
+  const handleBulkSave = () => {
+    onSave(localSlides);
+    setHasUnsavedChanges(false);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900 text-white overflow-y-auto">
-      <div className="max-w-6xl mx-auto p-8">
-        <div className="flex justify-between items-center mb-10 border-b border-slate-700 pb-6">
-          <div className="flex items-center gap-4">
-            <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors">
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <h1 className="text-3xl font-serif font-bold text-amber-500">Slide Management</h1>
+    <div className="fixed inset-0 z-50 bg-slate-950 text-white overflow-hidden flex flex-col">
+      {/* Header Bar */}
+      <div className="bg-slate-900/50 backdrop-blur-md border-b border-slate-800 p-6 flex justify-between items-center shrink-0">
+        <div className="flex items-center gap-6">
+          <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors">
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <div>
+            <h1 className="text-3xl font-serif font-bold text-amber-500 flex items-center gap-3">
+              <LayoutGrid className="w-8 h-8" />
+              Tavern Overview
+            </h1>
+            <p className="text-slate-400 text-sm">Rapid bulk editor for all active slides</p>
           </div>
+        </div>
+
+        <div className="flex items-center gap-4">
           <button 
             onClick={handleCreate}
-            className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-lg"
+            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-lg font-bold transition-all border border-slate-700"
           >
-            <Plus className="w-5 h-5" /> Add New Slide
+            <Plus className="w-5 h-5" /> Add Slide
+          </button>
+          
+          <button 
+            onClick={handleBulkSave}
+            disabled={!hasUnsavedChanges}
+            className={`flex items-center gap-2 px-8 py-2.5 rounded-lg font-bold transition-all shadow-xl ${
+              hasUnsavedChanges 
+              ? 'bg-amber-600 hover:bg-amber-500 text-white scale-105' 
+              : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+            }`}
+          >
+            <Save className="w-5 h-5" /> {hasUnsavedChanges ? 'Save All Changes' : 'Saved'}
+          </button>
+
+          <button onClick={onClose} className="p-2 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-full">
+            <X className="w-6 h-6" />
           </button>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          {/* List View */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold mb-4 text-slate-400 uppercase tracking-wider">Active Slides</h2>
-            {localSlides.filter(s => s.type === 'promo').map(slide => (
-              <div 
-                key={slide.id} 
-                className={`p-4 rounded-xl border transition-all cursor-pointer flex justify-between items-center group
-                  ${editingId === slide.id ? 'bg-amber-900/30 border-amber-500' : 'bg-slate-800 border-slate-700 hover:border-slate-500'}`}
-                onClick={() => handleEdit(slide)}
-              >
-                <div className="flex gap-4 items-center">
-                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-900 shrink-0">
-                    <img src={slide.imageUrl} className="w-full h-full object-cover" alt="thumbnail" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg">{slide.title}</h3>
-                    <p className="text-slate-400 text-sm">{slide.day} • {slide.price}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={(e) => { e.stopPropagation(); handleEdit(slide); }} className="p-2 hover:bg-blue-600/20 text-blue-400 rounded-full">
-                    <Edit2 className="w-5 h-5" />
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); handleDelete(slide.id); }} className="p-2 hover:bg-red-600/20 text-red-400 rounded-full">
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Edit Form */}
-          <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 sticky top-8 h-fit">
-            {editingId ? (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-bold">Edit Slide</h2>
-                  <button onClick={() => setEditingId(null)} className="text-slate-400 hover:text-white">
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-400">Day / Label</label>
-                    <input 
-                      type="text" 
-                      value={formData.day || ''} 
-                      onChange={e => setFormData({...formData, day: e.target.value})}
-                      className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 focus:border-amber-500 focus:outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-400">Price / Time</label>
-                    <input 
-                      type="text" 
-                      value={formData.price || ''} 
-                      onChange={e => setFormData({...formData, price: e.target.value})}
-                      className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 focus:border-amber-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-400">Title</label>
-                  <input 
-                    type="text" 
-                    value={formData.title || ''} 
-                    onChange={e => setFormData({...formData, title: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 focus:border-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-400">Description</label>
-                  <textarea 
-                    value={formData.description || ''} 
-                    onChange={e => setFormData({...formData, description: e.target.value})}
-                    rows={4}
-                    className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 focus:border-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-400">Image URL</label>
-                  <input 
-                    type="text" 
-                    value={formData.imageUrl || ''} 
-                    onChange={e => setFormData({...formData, imageUrl: e.target.value})}
-                    className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 focus:border-amber-500 focus:outline-none text-sm font-mono"
-                  />
-                  <p className="text-xs text-slate-500">Use 'https://picsum.photos/1920/1080' for a random placeholder.</p>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-400">Highlight Color</label>
-                  <div className="flex gap-2">
-                    <input 
-                      type="color" 
-                      value={formData.highlightColor || '#eab308'} 
-                      onChange={e => setFormData({...formData, highlightColor: e.target.value})}
-                      className="h-10 w-20 bg-transparent cursor-pointer rounded overflow-hidden"
-                    />
-                    <input 
-                      type="text"
-                      value={formData.highlightColor || ''}
-                      onChange={e => setFormData({...formData, highlightColor: e.target.value})}
-                      className="flex-1 bg-slate-900 border border-slate-600 rounded-lg p-3 uppercase font-mono"
-                    />
-                  </div>
-                </div>
-
+      {/* Main Grid View */}
+      <div className="flex-1 overflow-y-auto p-8 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-slate-900 to-slate-950">
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
+          {localSlides.filter(s => s.type === 'promo').map((slide, index) => (
+            <div 
+              key={slide.id} 
+              className="bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden hover:border-amber-500/50 transition-all group flex flex-col"
+            >
+              {/* Card Header */}
+              <div className="p-4 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
+                <span className="text-xs font-black uppercase tracking-widest text-slate-500">Slide #{index + 1}</span>
                 <button 
-                  onClick={handleSaveForm}
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all"
+                  onClick={() => handleDelete(slide.id)}
+                  className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                 >
-                  <Save className="w-5 h-5" /> Save Changes
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center text-slate-500 opacity-50">
-                <Edit2 className="w-16 h-16 mb-4" />
-                <p className="text-xl">Select a slide to edit or create new.</p>
+
+              <div className="p-6 space-y-4 flex-1">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Day / Label</label>
+                    <input 
+                      type="text" 
+                      value={slide.day || ''} 
+                      onChange={e => handleUpdateSlide(slide.id, { day: e.target.value })}
+                      className="w-full bg-slate-950/50 border border-slate-700 rounded-lg p-2.5 text-sm focus:border-amber-500 outline-none transition-colors"
+                      placeholder="Monday"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Price / Time</label>
+                    <input 
+                      type="text" 
+                      value={slide.price || ''} 
+                      onChange={e => handleUpdateSlide(slide.id, { price: e.target.value })}
+                      className="w-full bg-slate-950/50 border border-slate-700 rounded-lg p-2.5 text-sm focus:border-amber-500 outline-none transition-colors font-bold text-amber-500"
+                      placeholder="$20"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase">Title</label>
+                  <input 
+                    type="text" 
+                    value={slide.title || ''} 
+                    onChange={e => handleUpdateSlide(slide.id, { title: e.target.value })}
+                    className="w-full bg-slate-950/50 border border-slate-700 rounded-lg p-2.5 text-base font-bold focus:border-amber-500 outline-none transition-colors"
+                    placeholder="Steak Night"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase">Description</label>
+                  <textarea 
+                    value={slide.description || ''} 
+                    onChange={e => handleUpdateSlide(slide.id, { description: e.target.value })}
+                    rows={3}
+                    className="w-full bg-slate-950/50 border border-slate-700 rounded-lg p-2.5 text-sm focus:border-amber-500 outline-none transition-colors resize-none leading-relaxed"
+                    placeholder="Describe the offer..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-[1fr_auto] gap-4 items-end">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Background Image Path</label>
+                    <div className="flex items-center gap-2 bg-slate-950/50 border border-slate-700 rounded-lg p-1 px-2">
+                      <ImageIcon className="w-4 h-4 text-slate-600" />
+                      <input 
+                        type="text" 
+                        value={slide.imageUrl || ''} 
+                        onChange={e => handleUpdateSlide(slide.id, { imageUrl: e.target.value })}
+                        className="flex-1 bg-transparent p-1.5 text-xs font-mono outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-1">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Theme</label>
+                    <input 
+                      type="color" 
+                      value={slide.highlightColor || '#f59e0b'} 
+                      onChange={e => handleUpdateSlide(slide.id, { highlightColor: e.target.value })}
+                      className="h-9 w-9 bg-transparent cursor-pointer rounded-lg overflow-hidden border border-slate-700"
+                    />
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
+
+              {/* Status footer for card */}
+              <div className="px-6 py-3 bg-slate-800/30 flex items-center justify-between text-[10px] text-slate-500">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                  LIVE PREVIEW ACTIVE
+                </div>
+                <div className="font-mono">{slide.id}</div>
+              </div>
+            </div>
+          ))}
+
+          {/* Add Slide Placeholder */}
+          <button 
+            onClick={handleCreate}
+            className="border-2 border-dashed border-slate-800 rounded-2xl flex flex-col items-center justify-center p-12 text-slate-600 hover:text-amber-500 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all group"
+          >
+            <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <Plus className="w-8 h-8" />
+            </div>
+            <span className="font-bold uppercase tracking-widest text-sm">Add New Promotion</span>
+          </button>
         </div>
       </div>
+      
+      {/* Footer Status Bar */}
+      {hasUnsavedChanges && (
+        <div className="bg-amber-600 p-3 text-center text-sm font-bold animate-bounce-in">
+          You have unsaved changes! Don't forget to click "Save All Changes" before closing.
+        </div>
+      )}
     </div>
   );
 };
